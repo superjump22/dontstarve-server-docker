@@ -11,8 +11,6 @@
 
 ## Introduction
 
-饥荒联机版独立服务器程序容器化后的极简镜像。仅仅将程序打包并把`dontstarve_dedicated_server_nullrenderer_x64`作为容器入口
-
 A minimalist containerized image for the Don't Starve Together dedicated server program. Just pack the program and use `dontstarve_dedicated_server_nullrenderer_x64` as the container entry point.
 
 ## Usage
