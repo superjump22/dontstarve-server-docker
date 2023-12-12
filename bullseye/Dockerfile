@@ -1,0 +1,52 @@
+#################################################################
+# Dockerfile that builds a Don't Starve Together dedicated server
+#################################################################
+
+# Base image: cm2network/steamcmd:root
+FROM cm2network/steamcmd:root
+
+LABEL maintainer="superjump22"
+
+# Environment settings
+ENV DST_DIR=${HOMEDIR}/dst \
+    DST_GAME_DIR=${DST_DIR}/game \
+    DST_SAVE_DIR=${DST_DIR}/save \
+    DST_MOD_DIR=${DST_GAME_DIR}/mods \
+    DST_UGC_MOD_DIR=${DST_DIR}/ugc_mods
+
+# Build Arguments
+ARG DEBIAN_FRONTEND=noninteractive
+ARG LANG=C.UTF-8
+ARG LC_ALL=C.UTF-8
+
+# Install dependencies
+RUN dpkg --add-architecture i386 && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends --no-install-suggests libcurl4-gnutls-dev:i386 libcurl3-gnutls && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create directories and set correct permissions
+RUN mkdir -p "${DST_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}" && \
+    chown -R "${USER}:${USER}" "${DST_DIR}"
+
+# Switch to non-root "steam" user
+USER ${USER}
+
+# Install Don't Starve Together
+RUN ${STEAMCMDDIR}/steamcmd.sh \
+    +force_install_dir ${DST_GAME_DIR} \
+    +login anonymous \
+    +app_update 343050 validate \
+    +quit
+
+# Set up volumes
+VOLUME ["${DST_SAVE_DIR}", "${DST_MOD_DIR}", "${DST_UGC_MOD_DIR}"]
+
+# Expose necessary ports
+EXPOSE 10888/udp 10999/udp 27016/udp
+
+# Set the working directory
+WORKDIR ${DST_GAME_DIR}/bin64
+
+# Specify the entrypoint
+ENTRYPOINT ["./dontstarve_dedicated_server_nullrenderer_x64"]
