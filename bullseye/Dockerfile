@@ -8,11 +8,11 @@ FROM cm2network/steamcmd:root
 LABEL maintainer="superjump22"
 
 # Environment settings
-ENV DST_DIR=${HOMEDIR}/dst \
-    DST_GAME_DIR=${DST_DIR}/game \
-    DST_SAVE_DIR=${DST_DIR}/save \
-    DST_MOD_DIR=${DST_GAME_DIR}/mods \
-    DST_UGC_MOD_DIR=${DST_DIR}/ugc_mods
+ENV DST_DIR=${HOMEDIR}/dst
+ENV DST_GAME_DIR=${DST_DIR}/game
+ENV DST_SAVE_DIR=${DST_DIR}/save
+ENV DST_MOD_DIR=${DST_GAME_DIR}/mods
+ENV DST_UGC_MOD_DIR=${DST_DIR}/ugc_mods
 
 # Build Arguments
 ARG DEBIAN_FRONTEND=noninteractive
@@ -23,17 +23,16 @@ ARG LC_ALL=C.UTF-8
 RUN dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests libcurl4-gnutls-dev:i386 libcurl3-gnutls && \
+    apt-get autoremove -y && \
+    apt-get clean -y && \
     rm -rf /var/lib/apt/lists/*
-
-# Create directories and set correct permissions
-RUN mkdir -p "${DST_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}" && \
-    chown -R "${USER}:${USER}" "${DST_DIR}"
 
 # Switch to non-root "steam" user
 USER ${USER}
 
 # Install Don't Starve Together
-RUN ${STEAMCMDDIR}/steamcmd.sh \
+RUN mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}" && \
+    ${STEAMCMDDIR}/steamcmd.sh \
     +force_install_dir ${DST_GAME_DIR} \
     +login anonymous \
     +app_update 343050 validate \
