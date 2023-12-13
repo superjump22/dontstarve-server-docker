@@ -185,6 +185,5 @@ docker run --rm -itd --name=dst-updatemods \
     -only_update_server_mods \ # 只更新模组，不启动世界
     -ugc_directory "/home/steam/dst/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
     -persistent_storage_root "/home/steam/dst" \ # 游戏程序需要指定的持久化根目录（请勿修改）
-    -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录（请勿修改）
-    -cluster "updatemods" # 仅用来下载/更新模组，只要与您正常游戏的存档路径名不冲突即可
+    -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录，这里用”temp“来下载/更新模组（别用"save"）
 ```

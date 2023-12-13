@@ -186,6 +186,5 @@ docker run --rm -itd --name=dst-updatemods \
     -only_update_server_mods \ # Only update mods, do not start world
     -ugc_directory "/home/steam/dst/ugc_mods" \ # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
     -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
-    -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
-    -cluster "updatemods" # Only for downloading/updating mods, as long as it doesn't conflict with your regular game save path name
+    -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves, we use "temp" for downloading/updating mods (please do not use "save")
 ```
