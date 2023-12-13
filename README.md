@@ -113,7 +113,6 @@ docker run --rm -itd --name=dst-master \
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
     -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
     -shard "Master" \ # Here is to start the overworld, usually called Master (actually, anything would do)
-    -monitor_parent_process # I don't know what this parameter is used for, but the official example has it, so we add it as well
     ... # Other parameters you need, refer to the official guide
 ```
 
@@ -160,7 +159,6 @@ docker run --rm -itd --name=dst-caves \
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
     -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
     -shard "Caves" \ # Here is to start the underworld, usually called Caves (actually anything would do)
-    -monitor_parent_process # I don't know what this parameter is used for, but the official example has it, so we add it as well
     ... # Other parameters you need, refer to the official guide
 ```
 

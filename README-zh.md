@@ -112,7 +112,6 @@ docker run --rm -itd --name=dst-master \
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录（请勿修改）
     -cluster "Cluster_1" \ # 当前世界存档的目录名，请与<cluster>保持一致
     -shard "Master" \ # 此处是开启地上世界，通常叫Master（实际上改成什么都行）
-    -monitor_parent_process # 这个参数我也不知道有什么用，但官方示例有，所以我们也加上
     ... # 其它你需要的参数，参考官方指南
 ```
 
@@ -159,7 +158,6 @@ docker run --rm -itd --name=dst-caves \
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录（请勿修改）
     -cluster "Cluster_1" \ # 当前世界存档的目录名，请与<cluster>保持一致
     -shard "Caves" \ # 此处是开启地下世界，通常叫Caves（实际上改成什么都行）
-    -monitor_parent_process # 这个参数我也不知道有什么用，但官方示例有，所以我们也加上
     ... # 其它你需要的参数，参考官方指南
 ```
 
