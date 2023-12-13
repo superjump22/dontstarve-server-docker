@@ -69,7 +69,7 @@ $ chmod -R 777 <path>/dst/ugc_mods
 
 The subsequent start commands completely depend on how you want to use the container. It is highly recommended to read through the [Dedicated Server Command Line Options Guide](https://forums.kleientertainment.com/forums/topic/64743-dedicated-server-command-line-options-guide/) first. Below are a few typical use cases:
 
-#### Example 1: Starting the Master world
+#### Example 1: Starting the Overworld
 
 First, you can pre-place the appropriate configuration in the save directory of your host machine:
 
@@ -79,7 +79,7 @@ First, you can pre-place the appropriate configuration in the save directory of 
 <path>/dst/save/<cluster>/<shard>/server.ini
 ```
 
-`<cluster>` represents the root directory of a save, you can name it arbitrarily, like `Cluster_1`; `<shard>` represents the directory of the world instance, for the Master world, usually use `Master` (actually the name is arbitrary)
+`<cluster>` represents the root directory of a save, you can name it arbitrarily, like `Cluster_1`; `<shard>` represents the directory of the world instance, for the overworld, usually use `Master` (actually the name is arbitrary)
 
 For how to set the configuration file, please refer to the official guide:
 
@@ -95,11 +95,11 @@ Later we will mount to the corresponding directory of the container through the 
 
 This way `dontstarve_dedicated_server_nullrenderer_x64` will read these configuration files when starting
 
-Below is a command template for starting the Master world, please modify according to your actual needs:
+Below is a command template for starting the overworld, please modify according to your actual needs:
 
 ```shell
 docker run --rm -itd --name=dst-master \
-    -p 10888:10888/udp \ # The port needed by the main world instance, generally, the Master world is the main world, so this port is needed, and the Caves world doesn't need it, the port number on the left of : needs to be unoccupied on the host machine
+    -p 10888:10888/udp \ # The port needed by the main world instance, generally, the overworld is the main world, so this port is needed, and the underworld doesn't need it, the port number on the left of : needs to be unoccupied on the host machine
     -p 10999:10999/udp \ # The port needed by the current world instance, the port number on the left of : needs to be unoccupied on the host machine
     -p 27016:27016/udp \ # The port needed by Steam, the port number on the left of : needs to be unoccupied on the host machine
     -v "<path>/dst/save:/home/steam/dst/save" \ # Mount save path
@@ -112,12 +112,12 @@ docker run --rm -itd --name=dst-master \
     -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
     -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
-    -shard "Master" \ # Here is to start the Master world, usually called Master (actually, anything would do)
+    -shard "Master" \ # Here is to start the overworld, usually called Master (actually, anything would do)
     -monitor_parent_process # I don't know what this parameter is used for, but the official example has it, so we add it as well
     ... # Other parameters you need, refer to the official guide
 ```
 
-#### Example 2: Starting the Caves world
+#### Example 2: Starting the Underworld
 
 First, you can pre-place the appropriate configuration in the save directory of your host machine:
 
@@ -127,7 +127,7 @@ First, you can pre-place the appropriate configuration in the save directory of 
 <path>/dst/save/<cluster>/<shard>/server.ini
 ```
 
-`<cluster>` represents the root directory of a save, you can name it arbitrarily, like `Cluster_1`; `<shard>` represents the directory of the world instance, for the Caves world, usually use `Caves` (actually the name is arbitrary)
+`<cluster>` represents the root directory of a save, you can name it arbitrarily, like `Cluster_1`; `<shard>` represents the directory of the world instance, for the underworld, usually use `Caves` (actually the name is arbitrary)
 
 For how to set the configuration file, please refer to the official guide:
 
@@ -143,7 +143,7 @@ Later we will mount to the corresponding directory of the container through the 
 
 This way `dontstarve_dedicated_server_nullrenderer_x64` will read these configuration files when starting
 
-Below is a command template for starting the Caves world, please modify according to your actual needs:
+Below is a command template for starting the underworld, please modify according to your actual needs:
 
 ```shell
 docker run --rm -itd --name=dst-caves \
@@ -159,7 +159,7 @@ docker run --rm -itd --name=dst-caves \
     -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
     -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
-    -shard "Caves" \ # Here is to start the Caves world, usually called Caves (actually anything would do)
+    -shard "Caves" \ # Here is to start the underworld, usually called Caves (actually anything would do)
     -monitor_parent_process # I don't know what this parameter is used for, but the official example has it, so we add it as well
     ... # Other parameters you need, refer to the official guide
 ```
