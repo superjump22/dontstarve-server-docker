@@ -18,6 +18,7 @@ ENV DST_UGC_MOD_DIR=${DST_DIR}/ugc_mods
 ARG DEBIAN_FRONTEND=noninteractive
 ARG LANG=C.UTF-8
 ARG LC_ALL=C.UTF-8
+ARG BRANCH=public
 
 # Install dependencies
 RUN dpkg --add-architecture i386 && \
@@ -32,11 +33,19 @@ USER ${USER}
 
 # Install Don't Starve Together
 RUN mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}" && \
-    ${STEAMCMDDIR}/steamcmd.sh \
-    +force_install_dir ${DST_GAME_DIR} \
-    +login anonymous \
-    +app_update 343050 validate \
-    +quit
+    if [ "${BRANCH}" = "public" ]; then \
+        ${STEAMCMDDIR}/steamcmd.sh \
+        +force_install_dir ${DST_GAME_DIR} \
+        +login anonymous \
+        +app_update 343050 validate \
+        +quit; \
+    else \
+        ${STEAMCMDDIR}/steamcmd.sh \
+        +force_install_dir ${DST_GAME_DIR} \
+        +login anonymous \
+        +app_update 343050 -beta "${BRANCH}" validate \
+        +quit; \
+    fi
 
 # Set up volumes
 VOLUME ["${DST_SAVE_DIR}", "${DST_MOD_DIR}", "${DST_UGC_MOD_DIR}"]
