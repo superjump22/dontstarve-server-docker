@@ -9,19 +9,29 @@
 <br />
 <br />
 
-## Introduction
+# Introduction
 
 A minimalist containerized image for the Don't Starve Together dedicated server program. Just pack the program and use `dontstarve_dedicated_server_nullrenderer_x64` as the container entry point.
 
-## Usage
+# Supported tags
 
-### Prerequisites
+-  `latest`, `public`: Stable version
+-  `updatebeta`: Public beta version
+-  Others: you can find the corresponding test branches in Steam by right-clicking -> Properties
+
+# Update frequency
+
+Every half hour
+
+# Usage
+
+## Prerequisites
 
 -  A `64`-bit system with a `docker` environment installed
 -  You are sufficiently familiar with `docker`
 -  You are sufficiently familiar with deploying Don't Starve Together dedicated servers in non-`docker` environments
 
-### Description
+## Description
 
 -  This image is based on the official `SteamCMD` image and installs the latest version of the Don't Starve Together dedicated server program in it, and uses the `64`-bit program as the container entry point
 -  The container's default user is `steam`
@@ -30,7 +40,7 @@ A minimalist containerized image for the Don't Starve Together dedicated server 
 -  In the container, the `V1` mod directory is `/home/steam/dst/game/mods`
 -  In the container, the `V2` mods (or `UGC` mods) directory is `/home/steam/dst/ugc_mods`
 
-### Examples
+## Examples
 
 Since this image directly uses `dontstarve_dedicated_server_nullrenderer_x64` as the container entry point, the command line parameters are the same as those provided by the official command line program (because it is just the same program). All supported commands can refer to the official guide:
 
@@ -67,7 +77,7 @@ $ chmod -R 777 <path>/dst
 
 The subsequent start commands completely depend on how you want to use the container. It is highly recommended to read through the [Dedicated Server Command Line Options Guide](https://forums.kleientertainment.com/forums/topic/64743-dedicated-server-command-line-options-guide/) first. Below are a few typical use cases:
 
-#### Example 1: Starting the Overworld
+### Example 1: Starting the Overworld
 
 First, you can pre-place the appropriate configuration in the save directory of your host machine:
 
@@ -114,7 +124,7 @@ docker run --rm -itd --name=dst-master \
     ... # Other parameters you need, refer to the official guide
 ```
 
-#### Example 2: Starting the Underworld
+### Example 2: Starting the Underworld
 
 First, you can pre-place the appropriate configuration in the save directory of your host machine:
 
@@ -160,7 +170,7 @@ docker run --rm -itd --name=dst-caves \
     ... # Other parameters you need, refer to the official guide
 ```
 
-#### Example 3: Download/Update Mods
+### Example 3: Download/Update Mods
 
 First, you need to modify the `dedicated_server_mods_setup.lua` on your host machine to include the mods you need to download/update:
 
@@ -185,4 +195,53 @@ docker run --rm -itd --name=dst-updatemods \
     -ugc_directory "/home/steam/dst/ugc_mods" \ # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
     -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
     -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves, we use "temp" for downloading/updating mods (please do not use "save")
+```
+
+### Example 4: The three commands I use most often:
+
+Update mods:
+
+```
+docker run --rm -itd --name=dst-updatemods \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -only_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "temp" \
+    -cluster "updatemods"
+```
+
+Start overworld:
+
+```
+docker run --rm -itd --network=host --name=dst-master \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "Cluster_1" \
+    -shard "Master"
+```
+
+Start caves:
+
+```
+docker run --rm -itd --network=host --name=dst-caves \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "test" \
+    -shard "c"
 ```

@@ -9,19 +9,29 @@
 <br />
 <br />
 
-## 简介
+# 简介
 
 饥荒联机版独立服务器程序容器化后的极简镜像。仅仅将程序打包并把`dontstarve_dedicated_server_nullrenderer_x64`作为容器入口
 
-## 使用方法
+# 支持的标签
 
-### 前提
+- `latest`、`public`：正式版
+- `updatebeta`：公测版
+- 其它：可以在Steam里，右键->属性找到对应的测试分支
+
+# 更新频率
+
+每半小时
+
+# 使用方法
+
+## 前提
 
 - `64`位且安装有`docker`环境的系统
 - 您对`docker`使用足够熟悉
 - 您对非`docker`环境下部署饥荒联机版独立服务器足够熟悉
 
-### 说明
+## 说明
 
 - 该镜像基于`SteamCMD`的官方镜像修改而来，在其中安装最新版的饥荒联机版独立服务器程序，并将`64`位的程序作为容器入口
 - 容器默认用户为`steam`
@@ -30,7 +40,7 @@
 - 容器内，`V1`模组目录为`/home/steam/dst/game/mods`
 - 容器内，`V2`模组（`UGC`模组）目录为`/home/steam/dst/ugc_mods`
 
-### 示例
+## 示例
 
 因为本镜像是直接将`dontstarve_dedicated_server_nullrenderer_x64`作为容器入口，所以命令参数与官方提供的命令行程序参数一致（因为本身就是同一个程序），所有支持的命令可参考官方指南：
 
@@ -66,7 +76,7 @@ $ chmod -R 777 <path>/dst
 之后的启动命令就完全取决于您要如何使用容器了，强烈建议先完整看一遍[Dedicated Server Command Line Options Guide](https://forums.kleientertainment.com/forums/topic/64743-dedicated-server-command-line-options-guide/)
 ，以下是几个典型的使用场景：
 
-#### 示例一：启动地上世界
+### 示例一：启动地上世界
 
 首先，您可以预先在宿主机的存档目录里放入合适的配置：
 
@@ -113,7 +123,7 @@ docker run --rm -itd --name=dst-master \
     ... # 其它你需要的参数，参考官方指南
 ```
 
-#### 示例二：启动地下世界
+### 示例二：启动地下世界
 
 首先，您可以预先在宿主机的存档目录里放入合适的配置：
 
@@ -159,7 +169,7 @@ docker run --rm -itd --name=dst-caves \
     ... # 其它你需要的参数，参考官方指南
 ```
 
-#### 示例三：下载/更新模组
+### 示例三：下载/更新模组
 
 首先，您需要修改宿主机上的`dedicated_server_mods_setup.lua`，往其中写入需要下载/更新的模组：
 
@@ -184,4 +194,53 @@ docker run --rm -itd --name=dst-updatemods \
     -ugc_directory "/home/steam/dst/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
     -persistent_storage_root "/home/steam/dst" \ # 游戏程序需要指定的持久化根目录（请勿修改）
     -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录，这里用”temp“来下载/更新模组（别用"save"）
+```
+
+### 示例四：我最常用的三条命令：
+
+更新模组：
+
+```
+docker run --rm -itd --name=dst-updatemods \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -only_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "temp" \
+    -cluster "updatemods"
+```
+
+启动地上：
+
+```
+docker run --rm -itd --network=host --name=dst-master \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "Cluster_1" \
+    -shard "Master"
+```
+
+启动地下：
+
+```
+docker run --rm -itd --network=host --name=dst-caves \
+    -v "$HOME/dst/save:/home/steam/dst/save" \
+    -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
+    -v "$HOME/dst/ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "test" \
+    -shard "c"
 ```
