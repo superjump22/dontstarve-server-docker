@@ -13,15 +13,15 @@
 
 A minimalist containerized image for the Don't Starve Together dedicated server program. Just pack the program and use `dontstarve_dedicated_server_nullrenderer_x64` as the container entry point.
 
-# Supported tags
+# Supported Tags
 
 -  `latest`, `public`: Stable version
 -  `updatebeta`: Public beta version
 -  Others: you can find the corresponding test branches in Steam by right-clicking -> Properties
 
-# Update frequency
+# Update Frequency
 
-Every half hour
+The image updates automatically every half hour if outdated, keeping this repository practically in real-time sync with the latest official version.
 
 # Usage
 
@@ -197,11 +197,11 @@ docker run --rm -itd --name=dst-updatemods \
     -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves, we use "temp" for downloading/updating mods (please do not use "save")
 ```
 
-### Example 4: The three commands I use most often:
+### Example 4: The Three Most Frequently Used Commands
 
 Update mods:
 
-```
+```shell
 docker run --rm -itd --name=dst-updatemods \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -216,7 +216,7 @@ docker run --rm -itd --name=dst-updatemods \
 
 Start overworld:
 
-```
+```shell
 docker run --rm -itd --network=host --name=dst-master \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -232,7 +232,7 @@ docker run --rm -itd --network=host --name=dst-master \
 
 Start caves:
 
-```
+```shell
 docker run --rm -itd --network=host --name=dst-caves \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -242,6 +242,6 @@ docker run --rm -itd --network=host --name=dst-caves \
     -ugc_directory "/home/steam/dst/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "save" \
-    -cluster "test" \
-    -shard "c"
+    -cluster "Cluster_1" \
+    -shard "Caves"
 ```

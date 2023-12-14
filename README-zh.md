@@ -21,7 +21,7 @@
 
 # 更新频率
 
-每半小时
+每半小时对比当前镜像版本和官方最新版本，如果版本落后则自动更新镜像，故可近似认为本仓库是实时更新
 
 # 使用方法
 
@@ -196,11 +196,11 @@ docker run --rm -itd --name=dst-updatemods \
     -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录，这里用”temp“来下载/更新模组（别用"save"）
 ```
 
-### 示例四：我最常用的三条命令：
+### 示例四：最常用的三条命令
 
 更新模组：
 
-```
+```shell
 docker run --rm -itd --name=dst-updatemods \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -215,7 +215,7 @@ docker run --rm -itd --name=dst-updatemods \
 
 启动地上：
 
-```
+```shell
 docker run --rm -itd --network=host --name=dst-master \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -231,7 +231,7 @@ docker run --rm -itd --network=host --name=dst-master \
 
 启动地下：
 
-```
+```shell
 docker run --rm -itd --network=host --name=dst-caves \
     -v "$HOME/dst/save:/home/steam/dst/save" \
     -v "$HOME/dst/mods:/home/steam/dst/game/mods" \
@@ -241,6 +241,6 @@ docker run --rm -itd --network=host --name=dst-caves \
     -ugc_directory "/home/steam/dst/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "save" \
-    -cluster "test" \
-    -shard "c"
+    -cluster "Cluster_1" \
+    -shard "Caves"
 ```
