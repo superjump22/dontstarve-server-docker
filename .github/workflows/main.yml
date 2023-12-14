@@ -42,7 +42,7 @@ jobs:
 
   update-image:
     needs: check-update
-    if: ${{ needs.check-update.outputs.pushed }} == 'true'
+    if: needs.check-update.outputs.pushed == 'true' && needs.check-update.outputs.versions != '[]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
