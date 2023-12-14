@@ -1,6 +1,6 @@
-#################################################################
-# Dockerfile that builds a Don't Starve Together dedicated server
-#################################################################
+###################################################################
+# Dockerfile that builds a Don't Starve Together dedicated server #
+###################################################################
 
 # Base image: cm2network/steamcmd:root
 FROM cm2network/steamcmd:root
