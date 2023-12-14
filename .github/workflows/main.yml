@@ -71,10 +71,10 @@ jobs:
           build-args: BRANCH=${{ matrix.version }}
 
       - name: Build and push latest
-        if: matrix.version == 'public'
+        if: ${{ matrix.version }} == 'public'
         uses: docker/build-push-action@v5
         with:
           context: ./bullseye
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.version }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:latest
           build-args: BRANCH=${{ matrix.version }}
