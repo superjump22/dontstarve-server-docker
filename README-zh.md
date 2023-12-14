@@ -60,9 +60,7 @@ $ touch modsettings.lua
 
 ```shell
 # 在您的宿主机上
-$ chmod -R 777 <path>/dst/save
-$ chmod -R 777 <path>/dst/mods
-$ chmod -R 777 <path>/dst/ugc_mods
+$ chmod -R 777 <path>/dst
 ```
 
 之后的启动命令就完全取决于您要如何使用容器了，强烈建议先完整看一遍[Dedicated Server Command Line Options Guide](https://forums.kleientertainment.com/forums/topic/64743-dedicated-server-command-line-options-guide/)

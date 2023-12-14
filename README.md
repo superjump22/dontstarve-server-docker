@@ -62,9 +62,7 @@ For example, if the above three commands are executed as the `root` user on your
 
 ```shell
 # On your host machine
-$ chmod -R 777 <path>/dst/save
-$ chmod -R 777 <path>/dst/mods
-$ chmod -R 777 <path>/dst/ugc_mods
+$ chmod -R 777 <path>/dst
 ```
 
 The subsequent start commands completely depend on how you want to use the container. It is highly recommended to read through the [Dedicated Server Command Line Options Guide](https://forums.kleientertainment.com/forums/topic/64743-dedicated-server-command-line-options-guide/) first. Below are a few typical use cases:
