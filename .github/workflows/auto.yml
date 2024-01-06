@@ -32,6 +32,7 @@ jobs:
 
       - name: Get changed versions
         id: get-versions
+        if: steps.commit-changes.outputs.pushed == 'true'
         run: |
           echo "versions=$(git diff --name-only HEAD~1..HEAD -- 'versions/*.txt' | cut -d "/" -f 2 | cut -d "." -f 1 | jq -cnR '[inputs]')" >> "$GITHUB_OUTPUT"
 
