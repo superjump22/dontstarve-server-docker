@@ -1,4 +1,4 @@
-name: Update Don't Starve Together Image (Auto)
+name: Update Game Image (Auto)
 
 on:
   schedule:

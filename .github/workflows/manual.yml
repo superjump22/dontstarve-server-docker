@@ -1,4 +1,4 @@
-name: Update Don't Starve Together Image (Manual)
+name: Update Game Image (Manual)
 
 on:
   workflow_dispatch:
