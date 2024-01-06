@@ -16,8 +16,7 @@ A minimalist containerized image for the Don't Starve Together dedicated server 
 # Supported Tags
 
 - `latest`, `public`: Stable version
-- `updatebeta`: Public beta version
-- Others: you can find the corresponding test branches in Steam by right-clicking -> Properties
+- Others: you can find the corresponding test branches in Steam, by right-clicking -> Properties -> Betas -> Beta Participation
 
 # Update Frequency
 
@@ -238,3 +237,33 @@ docker run --rm -itd --network=host --name=dst-caves \
     -cluster "test" \
     -shard "c"
 ```
+
+### Example 5: Use in Scripts or Programs
+
+In the previous examples, the `docker run` command includes the `-t` parameter, which is suitable for manually managing the container via terminal.
+
+In a non-Docker environment, if you need to manage a `dontstarve_dedicated_server_nullrenderer_x64` process within a script or program, the usual way is to wrap it using tools like `supervisor` or `screen`. Then, you can pass commands to the `dontstarve_dedicated_server_nullrenderer_x64` process through something like `screen -r "dst" -p 0 -X stuff "c_shutdown()$(printf \\r)"`.
+
+In a Docker environment, you don't need to do that. You just need to remove the `-t` parameter when starting the container:
+
+```shell
+docker run --rm -id --network=host --name=dst-master \
+    -v "dst_save:/home/steam/dst/save" \
+    -v "dst_mods:/home/steam/dst/game/mods" \
+    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "test" \
+    -shard "m"
+```
+
+Then in your script:
+
+```shell
+docker exec -i dst-master bash -c 'echo "c_shutdown()" > /proc/1/fd/0'
+```
+
+This is because `dontstarve_dedicated_server_nullrenderer_x64` is the main process of the container, with PID=1, and its standard input is `/proc/1/fd/0`.

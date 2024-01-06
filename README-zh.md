@@ -16,8 +16,7 @@
 # 支持的标签
 
 - `latest`、`public`：正式版
-- `updatebeta`：公测版
-- 其它：可以在Steam里，右键->属性找到对应的测试分支
+- 其它：可以在Steam里，右键->属性->测试版->参与测试，找到对应的测试分支
 
 # 更新频率
 
@@ -239,3 +238,34 @@ docker run --rm -itd --network=host --name=dst-caves \
     -cluster "test" \
     -shard "c"
 ```
+
+### 示例五：在脚本或程序中使用
+
+前面的示例中，`docker run`都加上了`-t`参数，这适合于您用终端手动管理容器的场景
+
+在非`Docker`环境中，如果需要在脚本或程序中管理`dontstarve_dedicated_server_nullrenderer_x64`进程，通常的做法是用`supervisor`或`screen`等工具包一层，
+然后通过类似`screen -r "dst" -p 0 -X stuff "c_shutdown()$(printf \\r)"`这样的方式来向`dontstarve_dedicated_server_nullrenderer_x64`进程传递指令
+
+在`Docker`环境中，您不需要这样做，您只需要在启动容器的时候去掉`-t`参数：
+
+```shell
+docker run --rm -id --network=host --name=dst-master \
+    -v "dst_save:/home/steam/dst/save" \
+    -v "dst_mods:/home/steam/dst/game/mods" \
+    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    superjump22/dontstarvetogether:latest \
+    -skip_update_server_mods \
+    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -persistent_storage_root "/home/steam/dst" \
+    -conf_dir "save" \
+    -cluster "test" \
+    -shard "m"
+```
+
+然后在脚本中：
+
+```shell
+docker exec -i dst-master bash -c 'echo "c_shutdown()" > /proc/1/fd/0'
+```
+
+这是因为`dontstarve_dedicated_server_nullrenderer_x64`是容器的主进程，`PID`为1，其标准输入为`/proc/1/fd/0`
