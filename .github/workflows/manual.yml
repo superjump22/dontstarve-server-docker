@@ -1,4 +1,4 @@
-name: Update Don't Starve Together Image
+name: Update Don't Starve Together Image (Manual)
 
 on:
   workflow_dispatch:
@@ -6,47 +6,27 @@ on:
     branches: [main]
     paths:
       - "bullseye/Dockerfile"
-  schedule:
-    - cron: "*/30 * * * *"
 
 jobs:
-  check-update:
+  fetch-versions:
     runs-on: ubuntu-latest
     outputs:
-      pushed: ${{ steps.commit-changes.outputs.pushed }}
-      versions: ${{ steps.get-versions.outputs.versions }}
+      versions: ${{ steps.fetch-versions.outputs.versions }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}
-
-      - name: Fetch game versions
+      - name: Fetch versions
+        id: fetch-versions
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends --no-install-suggests curl jq
-          curl -s "https://api.steamcmd.net/v1/info/343050" | jq -r '.data."343050".depots.branches | to_entries[] | select(.value.pwdrequired != "1") | "\(.key) \(.value.buildid)"' | while read -r key value; do echo "$value" > "versions/${key}.txt"; done
-
-      - name: Commit changes
-        id: commit-changes
-        uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
-          message: "Update version files"
-          add: "versions/*.txt"
-
-      - name: Get changed versions
-        id: get-versions
-        run: |
-          echo "versions=$(git diff --name-only HEAD~1..HEAD -- 'versions/*.txt' | cut -d "/" -f 2 | cut -d "." -f 1 | jq -cnR '[inputs]')" >> "$GITHUB_OUTPUT"
+          echo "versions=$(curl -s 'https://api.steamcmd.net/v1/info/343050' | jq -r '.data."343050".depots.branches | to_entries[] | select(.value.pwdrequired != "1") | "\(.key)"' | jq -cnR '[inputs]')" >> "$GITHUB_OUTPUT"
 
   update-image:
-    needs: check-update
-    if: needs.check-update.outputs.pushed == 'true' && needs.check-update.outputs.versions != '[]'
+    needs: fetch-versions
+    if: needs.fetch-versions.outputs.versions != '[]'
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: ${{ fromJson(needs.check-update.outputs.versions) }}
+        version: ${{ fromJson(needs.fetch-versions.outputs.versions) }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
