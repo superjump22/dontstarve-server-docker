@@ -28,11 +28,11 @@ jobs:
           gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
           echo "gameinfo=$gameinfo" >> "$GITHUB_OUTPUT"
 
-          if [ -f version.csv ]; then \
-            previous=`cat version.csv | tail -n 1 | awk -F',' '{print $3}'` \
-          else \
-            previous=0 \
-          fi \
+          if [ -f version.csv ]; then
+            previous=`cat version.csv | tail -n 1 | awk -F',' '{print $3}'`
+          else
+            previous=0
+          fi
 
           current=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n | tail -n 1 | awk -F',' '{print $3}'`
 
