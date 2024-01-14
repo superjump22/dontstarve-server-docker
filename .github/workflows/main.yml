@@ -39,7 +39,8 @@ jobs:
           current=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n | tail -n 1 | awk -F',' '{print $3}'`
 
           echo "::group::Timeupdated"
-          echo "previous=$previous\ncurrent=$current"
+          echo "previous=$previous"
+          echo "current=$current"
           echo "::endgroup::"
 
           changed_list=`echo $gameinfo | jq -cr ".data.\"343050\".depots.branches | to_entries | map({branch: .key} + .value) | map(select(.pwdrequired != \"1\" and .timeupdated > \"$previous\" and .timeupdated <= \"$current\"))"`
