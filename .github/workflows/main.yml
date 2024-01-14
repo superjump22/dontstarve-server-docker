@@ -22,11 +22,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends --no-install-suggests curl jq
 
-      - name: Get changed list
-        id: get-changed-list
+      - name: Fetch game info
+        id: fetch-game-info
         run: |
           gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
           echo "gameinfo=$gameinfo" >> "$GITHUB_OUTPUT"
+
+      - name: Get changed list
+        id: get-changed-list
+        run: |
+          gameinfo=${{ steps.fetch-game-info.outputs.gameinfo }}
 
           if [ -f version.csv ]; then
             previous=`cat version.csv | tail -n 1 | awk -F',' '{print $3}'`
@@ -40,9 +45,9 @@ jobs:
           echo "changed_list=$changed_list" >> "$GITHUB_OUTPUT"
 
       - name: Update version csv
-        env:
-          gameinfo: ${{ steps.get-changed-list.outputs.gameinfo }}
         run: |
+          gameinfo=${{ steps.fetch-game-info.outputs.gameinfo }}
+
           echo "branch,buildid,timeupdated" > version.csv
           csv_data=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n`
           echo "$csv_data" >> version.csv
