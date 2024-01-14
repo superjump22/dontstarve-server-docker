@@ -17,16 +17,15 @@ jobs:
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends --no-install-suggests curl jq
-
       - name: Fetch game info
         id: fetch-game-info
         run: |
           gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
           echo "gameinfo=$gameinfo" >> "$GITHUB_ENV"
+
+          echo "::group::Game info"
+          echo $gameinfo | jq
+          echo "::endgroup::"
 
       - name: Get changed list
         id: get-changed-list
@@ -39,14 +38,26 @@ jobs:
 
           current=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n | tail -n 1 | awk -F',' '{print $3}'`
 
+          echo "::group::Timeupdated"
+          echo "previous=$previous\ncurrent=$current"
+          echo "::endgroup::"
+
           changed_list=`echo $gameinfo | jq -cr ".data.\"343050\".depots.branches | to_entries | map({branch: .key} + .value) | map(select(.pwdrequired != \"1\" and .timeupdated > \"$previous\" and .timeupdated <= \"$current\"))"`
           echo "changed_list=$changed_list" >> "$GITHUB_OUTPUT"
+
+          echo "::group::Changed list"
+          echo $changed_list | jq
+          echo "::endgroup::"
 
       - name: Update version csv
         run: |
           echo "branch,buildid,timeupdated" > version.csv
           csv_data=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n`
           echo "$csv_data" >> version.csv
+
+          echo "::group::Version csv"
+          echo `cat version.csv`
+          echo "::endgroup::"
 
       - name: Commit changes
         id: commit-changes
