@@ -57,7 +57,7 @@ jobs:
           echo "$csv_data" >> version.csv
 
           echo "::group::Version csv"
-          echo `cat version.csv`
+          cat version.csv
           echo "::endgroup::"
 
       - name: Commit changes
