@@ -18,6 +18,7 @@ LABEL dockerfile="https://github.com/superjump22/dontstarve-server-docker/blob/m
 LABEL dockerhub="https://hub.docker.com/r/superjump22/dontstarvetogether"
 LABEL github="https://github.com/superjump22/dontstarve-server-docker"
 LABEL maintainer="superjump"
+LABEL repo="superjump22/dontstarvetogether"
 LABEL branch="${DST_BRANCH}"
 LABEL buildid="${DST_BUILDID}"
 LABEL timeupdated="${DST_TIMEUPDATED}"
