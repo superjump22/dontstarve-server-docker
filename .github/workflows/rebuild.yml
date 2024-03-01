@@ -25,10 +25,6 @@ jobs:
 
           echo "rebuild_list=$rebuild_list" >> "$GITHUB_OUTPUT"
 
-          echo "::group::Rebuild Branches"
-          echo $rebuild_list | jq
-          echo "::endgroup::"
-
   rebuild-image:
     needs: get-rebuild-list
     if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
