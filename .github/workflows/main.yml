@@ -1,4 +1,4 @@
-name: Update Game Image
+name: Update Game Images
 
 on:
   workflow_dispatch:
@@ -68,7 +68,7 @@ jobs:
           message: "update version csv"
           add: "version.csv"
 
-  update-image:
+  update-images:
     needs: check-update
     if: needs.check-update.outputs.changed-list != '[]' && needs.check-update.outputs.pushed == 'true'
     runs-on: ubuntu-latest
@@ -94,7 +94,7 @@ jobs:
         if: matrix.changed-item.branch == 'public'
         uses: docker/build-push-action@v5
         with:
-          context: ./bullseye
+          context: ./build
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
@@ -108,7 +108,7 @@ jobs:
         if: matrix.changed-item.branch != 'public'
         uses: docker/build-push-action@v5
         with:
-          context: ./bullseye
+          context: ./build
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.changed-item.branch }}
           build-args: |

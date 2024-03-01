@@ -14,7 +14,7 @@ ARG DST_BUILDID
 ARG DST_TIMEUPDATED
 
 # Metadata
-LABEL dockerfile="https://github.com/superjump22/dontstarve-server-docker/blob/main/bullseye/Dockerfile"
+LABEL dockerfile="https://github.com/superjump22/dontstarve-server-docker/blob/main/build/Dockerfile"
 LABEL dockerhub="https://hub.docker.com/r/superjump22/dontstarvetogether"
 LABEL github="https://github.com/superjump22/dontstarve-server-docker"
 LABEL maintainer="superjump"
