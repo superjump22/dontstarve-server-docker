@@ -5,7 +5,7 @@ on:
 
 jobs:
   get-rebuild-list:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     outputs:
       rebuild-list: ${{ steps.read-csv.outputs.rebuild_list }}
     steps:
@@ -32,7 +32,7 @@ jobs:
   rebuild-image:
     needs: get-rebuild-list
     if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         rebuild-item: ${{ fromJson(needs.get-rebuild-list.outputs.rebuild-list) }}
