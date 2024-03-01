@@ -18,7 +18,7 @@ jobs:
         id: read-csv
         run: |
           if [ -f version.csv ]; then
-            rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -s '.'`
+            rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -cr -s '.'`
           else
             rebuild_list='[]'
           fi
