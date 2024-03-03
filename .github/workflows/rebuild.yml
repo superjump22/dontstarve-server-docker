@@ -14,14 +14,38 @@ jobs:
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
+      - name: Fetch game info
+        id: fetch-game-info
+        run: |
+          gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
+          echo "gameinfo=$gameinfo" >> "$GITHUB_ENV"
+
+          echo "::group::Game info"
+          echo $gameinfo | jq
+          echo "::endgroup::"
+
+      - name: Update version csv
+        run: |
+          echo "branch,buildid,timeupdated" > version.csv
+          csv_data=`echo $gameinfo | jq -r ".data.\"343050\".depots.branches | to_entries[] | select(.value.pwdrequired != \"1\") | \"\\(.key),\\(.value.buildid),\\(.value.timeupdated)\"" | sort -t, -k3 -n`
+          echo "$csv_data" >> version.csv
+
+          echo "::group::Version csv"
+          cat version.csv
+          echo "::endgroup::"
+
+      - name: Commit changes
+        id: commit-changes
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: "update version csv"
+          add: "version.csv"
+
       - name: Read Csv
         id: read-csv
         run: |
-          if [ -f version.csv ]; then
-            rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -cr -s '.'`
-          else
-            rebuild_list='[]'
-          fi
+          rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -cr -s '.'`
 
           echo "rebuild_list=$rebuild_list" >> "$GITHUB_OUTPUT"
 
