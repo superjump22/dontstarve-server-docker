@@ -36,7 +36,7 @@
 - 容器内，游戏目录为`/home/steam/dst/game`
 - 容器内，存档目录为`/home/steam/dst/save`
 - 容器内，`V1`模组目录为`/home/steam/dst/game/mods`
-- 容器内，`V2`模组（`UGC`模组）目录为`/home/steam/dst/ugc_mods`
+- 容器内，`V2`模组（`UGC`模组）目录为`/home/steam/dst/game/ugc_mods`
 - 容器外，存档和模组的持久化存储由您自己定义，您只需要在运行的时候挂载进容器对应的目录
 
 ## 示例
@@ -103,11 +103,11 @@ docker run --rm -itd --name=dst-master \
     -p 27016:27016/udp \ # Steam需要使用的端口，:左边的端口号需要在宿主机上未被占用
     -v "<path>/dst/save:/home/steam/dst/save" \ # 挂载存档路径
     -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # 挂载V1模组路径
-    -v "<path>/dst/ugc_mods:/home/steam/dst/ugc_mods" \ # 挂载V2模组路径
+    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # 挂载V2模组路径
     superjump22/dontstarvetogether:latest \
     # 以下为传给dontstarve_dedicated_server_nullrenderer_x64的参数
     -skip_update_server_mods \ # 不更新模组，直接启动（我们会用别的方式更新模组，因此请勿修改）
-    -ugc_directory "/home/steam/dst/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
     -persistent_storage_root "/home/steam/dst" \ # 游戏程序需要指定的持久化根目录（请勿修改）
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录（请勿修改）
     -cluster "Cluster_1" \ # 当前世界存档的目录名，请与<cluster>保持一致
@@ -149,11 +149,11 @@ docker run --rm -itd --name=dst-caves \
     -p 27017:27016/udp \ # Steam需要使用的端口，:左边的端口号需要在宿主机上未被占用
     -v "<path>/dst/save:/home/steam/dst/save" \ # 挂载存档路径
     -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # 挂载V1模组路径
-    -v "<path>/dst/ugc_mods:/home/steam/dst/ugc_mods" \ # 挂载V2模组路径
+    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # 挂载V2模组路径
     superjump22/dontstarvetogether:latest \
     # 以下为传给dontstarve_dedicated_server_nullrenderer_x64的参数
     -skip_update_server_mods \ # 不更新模组，直接启动（我们会用别的方式更新模组，因此请勿修改）
-    -ugc_directory "/home/steam/dst/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
     -persistent_storage_root "/home/steam/dst" \ # 游戏程序需要指定的持久化根目录（请勿修改）
     -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录（请勿修改）
     -cluster "Cluster_1" \ # 当前世界存档的目录名，请与<cluster>保持一致
@@ -179,11 +179,11 @@ ServerModSetup("398858801")
 docker run --rm -itd --name=dst-updatemods \
     -v "<path>/dst/save:/home/steam/dst/save" \ # 挂载存档路径
     -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # 挂载V1模组路径
-    -v "<path>/dst/ugc_mods:/home/steam/dst/ugc_mods" \ # 挂载V2模组路径
+    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # 挂载V2模组路径
     superjump22/dontstarvetogether:latest \
     # 以下为传给dontstarve_dedicated_server_nullrenderer_x64的参数
     -only_update_server_mods \ # 只更新模组，不启动世界
-    -ugc_directory "/home/steam/dst/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \ # 指定容器内部的V2模组存放路径，方便管理（请勿修改）
     -persistent_storage_root "/home/steam/dst" \ # 游戏程序需要指定的持久化根目录（请勿修改）
     -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>"是所有存档的总目录，这里用”temp“来下载/更新模组（别用"save"）
 ```
@@ -198,10 +198,10 @@ docker run --rm -itd --name=dst-updatemods \
 docker run --rm -itd --name=dst-updatemods \
     -v "dst_save:/home/steam/dst/save" \
     -v "dst_mods:/home/steam/dst/game/mods" \
-    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    -v "dst_ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     -only_update_server_mods \
-    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "temp" \
     -cluster "updatemods"
@@ -213,10 +213,10 @@ docker run --rm -itd --name=dst-updatemods \
 docker run --rm -itd --network=host --name=dst-master \
     -v "dst_save:/home/steam/dst/save" \
     -v "dst_mods:/home/steam/dst/game/mods" \
-    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    -v "dst_ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     -skip_update_server_mods \
-    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "save" \
     -cluster "test" \
@@ -229,10 +229,10 @@ docker run --rm -itd --network=host --name=dst-master \
 docker run --rm -itd --network=host --name=dst-caves \
     -v "dst_save:/home/steam/dst/save" \
     -v "dst_mods:/home/steam/dst/game/mods" \
-    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    -v "dst_ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     -skip_update_server_mods \
-    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "save" \
     -cluster "test" \
@@ -252,10 +252,10 @@ docker run --rm -itd --network=host --name=dst-caves \
 docker run --rm -id --network=host --name=dst-master \
     -v "dst_save:/home/steam/dst/save" \
     -v "dst_mods:/home/steam/dst/game/mods" \
-    -v "dst_ugc_mods:/home/steam/dst/ugc_mods" \
+    -v "dst_ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     -skip_update_server_mods \
-    -ugc_directory "/home/steam/dst/ugc_mods" \
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
     -persistent_storage_root "/home/steam/dst" \
     -conf_dir "save" \
     -cluster "test" \
