@@ -28,7 +28,7 @@ ENV DST_DIR=${HOMEDIR}/dst
 ENV DST_GAME_DIR=${DST_DIR}/game
 ENV DST_SAVE_DIR=${DST_DIR}/save
 ENV DST_MOD_DIR=${DST_GAME_DIR}/mods
-ENV DST_UGC_MOD_DIR=${DST_DIR}/ugc_mods
+ENV DST_UGC_MOD_DIR=${DST_GAME_DIR}/ugc_mods
 
 RUN set -x && \
     # Install dependencies
