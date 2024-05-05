@@ -53,7 +53,7 @@ jobs:
           echo $rebuild_list | jq
           echo "::endgroup::"
 
-  rebuild-image:
+  rebuild-images:
     needs: get-rebuild-list
     if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
     runs-on: ubuntu-latest
