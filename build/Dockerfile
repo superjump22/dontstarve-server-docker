@@ -24,6 +24,8 @@ LABEL buildid="${DST_BUILDID}"
 LABEL timeupdated="${DST_TIMEUPDATED}"
 
 # Environment settings
+ENV SteamAppId=322330
+ENV SteamGameId=322330
 ENV DST_DIR=${HOMEDIR}/dst
 ENV DST_GAME_DIR=${DST_DIR}/game
 ENV DST_SAVE_DIR=${DST_DIR}/save
