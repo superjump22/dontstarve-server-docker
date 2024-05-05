@@ -59,3 +59,4 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
+    secrets: inherit

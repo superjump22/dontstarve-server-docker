@@ -74,3 +74,4 @@ jobs:
     uses: ./.github/workflows/build.yml
     with:
       build-items: ${{ needs.check-update.outputs.changed-list }}
+    secrets: inherit
