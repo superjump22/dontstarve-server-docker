@@ -44,12 +44,6 @@ RUN set -x && \
     su "${USER}" -c 'mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}"' && \
     su "${USER}" -c  '${STEAMCMDDIR}/steamcmd.sh +force_install_dir ${DST_GAME_DIR} +login anonymous +app_update 343050 -beta "${DST_BRANCH}" validate +quit'
 
-# Set up volumes
-VOLUME ["${DST_SAVE_DIR}", "${DST_MOD_DIR}", "${DST_UGC_MOD_DIR}"]
-
-# Expose necessary ports
-EXPOSE 10888/udp 10999/udp 27016/udp
-
 # Set the working directory
 WORKDIR ${DST_GAME_DIR}/bin64
 

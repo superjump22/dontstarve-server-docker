@@ -26,7 +26,7 @@ The image updates automatically every half hour if outdated, keeping this reposi
 
 ## Prerequisites
 
-- A `64`-bit system with a `docker` environment installed
+- A `amd64` system with a `docker` environment installed
 - You are sufficiently familiar with `docker`
 - You are sufficiently familiar with deploying Don't Starve Together dedicated servers in non-`docker` environments
 
@@ -97,21 +97,34 @@ Below is a command template for starting the overworld, please modify according 
 
 ```shell
 docker run --rm -itd --name=dst-master \
-    -p 10888:10888/udp \ # The port needed by the main world instance, generally, the overworld is the main world, so this port is needed, and the underworld doesn't need it, the port number on the left of : needs to be unoccupied on the host machine
-    -p 10999:10999/udp \ # The port needed by the current world instance, the port number on the left of : needs to be unoccupied on the host machine
-    -p 27016:27016/udp \ # The port needed by Steam, the port number on the left of : needs to be unoccupied on the host machine
-    -v "<path>/dst/save:/home/steam/dst/save" \ # Mount save path
-    -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # Mount V1 mod path
-    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # Mount V2 mod path
+    # The port needed by the main world instance, generally, the overworld is the main world, so this port is needed, and the underworld doesn't need it, the port number on the left of : needs to be unoccupied on the host machine
+    -p 10888:10888/udp \
+    # The port needed by the current world instance, the port number on the left of : needs to be unoccupied on the host machine
+    -p 10999:10999/udp \
+    # The port needed by Steam, the port number on the left of : needs to be unoccupied on the host machine
+    -p 27016:27016/udp \
+    # Mount save path
+    -v "<path>/dst/save:/home/steam/dst/save" \
+    # Mount V1 mod path
+    -v "<path>/dst/mods:/home/steam/dst/game/mods" \
+    # Mount V2 mod path
+    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     # The following are parameters given to dontstarve_dedicated_server_nullrenderer_x64
-    -skip_update_server_mods \ # Do not update mods, start directly (we will update mods in other ways, so please do not modify)
-    -ugc_directory "/home/steam/dst/game/ugc_mods" \ # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
-    -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
-    -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
-    -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
-    -shard "Master" \ # Here is to start the overworld, usually called Master (actually, anything would do)
-    ... # Other parameters you need, refer to the official guide
+    # Do not update mods, start directly (we will update mods in other ways, so please do not modify)
+    -skip_update_server_mods \
+    # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
+    # Persistent root directory required by the game program (please do not modify)
+    -persistent_storage_root "/home/steam/dst" \
+    # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
+    -conf_dir "save" \
+    # The directory name of the current world save, should be consistent with <cluster>
+    -cluster "Cluster_1" \
+    # Here is to start the overworld, usually called Master (actually, anything would do)
+    -shard "Master" \
+    # Other parameters you need, refer to the official guide
+    ...
 ```
 
 ### Example 2: Starting the Underworld
@@ -144,20 +157,32 @@ Below is a command template for starting the underworld, please modify according
 
 ```shell
 docker run --rm -itd --name=dst-caves \
-    -p 11000:10999/udp \ # The port needed by the current world instance, the port number on the left of : needs to be unoccupied on the host machine
-    -p 27017:27016/udp \ # The port needed by Steam, the port number on the left of : needs to be unoccupied on the host machine
-    -v "<path>/dst/save:/home/steam/dst/save" \ # Mount save path
-    -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # Mount V1 mod path
-    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # Mount V2 mod path
+    # The port needed by the current world instance, the port number on the left of : needs to be unoccupied on the host machine
+    -p 11000:10999/udp \
+    # The port needed by Steam, the port number on the left of : needs to be unoccupied on the host machine
+    -p 27017:27016/udp \
+    # Mount save path
+    -v "<path>/dst/save:/home/steam/dst/save" \
+    # Mount V1 mod path
+    -v "<path>/dst/mods:/home/steam/dst/game/mods" \
+    # Mount V2 mod path
+    -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     # The following are parameters given to dontstarve_dedicated_server_nullrenderer_x64
-    -skip_update_server_mods \ # Do not update mods, start directly (we will update mods in other ways, so please do not modify)
-    - ugc_directory "/home/steam/dst/game/ugc_mods" \ # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
-    -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
-    -conf_dir "save" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
-    -cluster "Cluster_1" \ # The directory name of the current world save, should be consistent with <cluster>
-    -shard "Caves" \ # Here is to start the underworld, usually called Caves (actually anything would do)
-    ... # Other parameters you need, refer to the official guide
+    # Do not update mods, start directly (we will update mods in other ways, so please do not modify)
+    -skip_update_server_mods \
+    # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
+    -ugc_directory "/home/steam/dst/game/ugc_mods" \
+    # Persistent root directory required by the game program (please do not modify)
+    -persistent_storage_root "/home/steam/dst" \
+    # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves (please do not modify)
+    -conf_dir "save" \
+    # The directory name of the current world save, should be consistent with <cluster>
+    -cluster "Cluster_1" \
+    # Here is to start the underworld, usually called Caves (actually anything would do)
+    -shard "Caves" \
+    # Other parameters you need, refer to the official guide
+    ...
 ```
 
 ### Example 3: Download/Update Mods
@@ -175,16 +200,15 @@ ServerModSetup("398858801")
 Here's the template for the command to download/update mods:
 
 ```shell
-docker run --rm -itd --name=dst-updatemods \
-    -v "<path>/dst/save:/home/steam/dst/save" \ # Mount save path
+docker run --rm -itd \
     -v "<path>/dst/mods:/home/steam/dst/game/mods" \ # Mount V1 mod path
     -v "<path>/dst/ugc_mods:/home/steam/dst/game/ugc_mods" \ # Mount V2 mod path
     superjump22/dontstarvetogether:latest \
     # The following are parameters given to dontstarve_dedicated_server_nullrenderer_x64
-    -only_update_server_mods \ # Only update mods, do not start world
-    -ugc_directory "/home/steam/dst/game/ugc_mods" \ # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
-    -persistent_storage_root "/home/steam/dst" \ # Persistent root directory required by the game program (please do not modify)
-    -conf_dir "temp" \ # "<persistent_storage_root>/<conf_dir>" is the total directory of all saves, we use "temp" for downloading/updating mods (please do not use "save")
+    # Only update mods, do not start world
+    -only_update_server_mods \
+    # Specify the V2 mod storage path inside the container for ease of management (please do not modify)
+    -ugc_directory "/home/steam/dst/game/ugc_mods"
 ```
 
 ### Example 4: My Three Most Frequently Used Commands
@@ -194,16 +218,12 @@ Please note: I typically run the container in host mode and place the save files
 Update mods:
 
 ```shell
-docker run --rm -itd --name=dst-updatemods \
-    -v "dst_save:/home/steam/dst/save" \
+docker run --rm -itd \
     -v "dst_mods:/home/steam/dst/game/mods" \
     -v "dst_ugc_mods:/home/steam/dst/game/ugc_mods" \
     superjump22/dontstarvetogether:latest \
     -only_update_server_mods \
-    -ugc_directory "/home/steam/dst/game/ugc_mods" \
-    -persistent_storage_root "/home/steam/dst" \
-    -conf_dir "temp" \
-    -cluster "updatemods"
+    -ugc_directory "/home/steam/dst/game/ugc_mods"
 ```
 
 Start overworld:
