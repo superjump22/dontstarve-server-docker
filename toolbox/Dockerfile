@@ -30,6 +30,11 @@ COPY entry.sh /root/entry.sh
 
 RUN chmod +x /root/entry.sh
 
+# Unzip scripts
+RUN cd ${DST_GAMEDIR}/data && \
+    unzip databundles/scripts.zip && \
+    rm -f databundles/scripts.zip
+
 ENTRYPOINT ["/root/entry.sh"]
 
 CMD ["help"]
