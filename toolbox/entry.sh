@@ -4,6 +4,7 @@ function help() {
     echo "Available commands:"
     echo "  help    - Display this help."
     echo "  modinfo - Generate the modinfo json of all installed mods."
+    echo "  clientversion - Get the client version."
 }
 
 function modinfo() {
@@ -36,12 +37,19 @@ function modinfo_jsonify() {
     fi
 }
 
+function clientversion() {
+    cat $DST_GAMEDIR/version.txt
+}
+
 case "$1" in
 help)
     help
     ;;
 modinfo)
     modinfo
+    ;;
+clientversion)
+    clientversion
     ;;
 *)
     echo "Unknown command: $1"
