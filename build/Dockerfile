@@ -3,7 +3,7 @@
 ###################################################################
 
 # Base image: cm2network/steamcmd:root
-FROM cm2network/steamcmd:root
+FROM cm2network/steamcmd:root-bookworm
 
 # Build Arguments
 ARG DEBIAN_FRONTEND=noninteractive
@@ -14,18 +14,14 @@ ARG DST_BUILDID
 ARG DST_TIMEUPDATED
 
 # Metadata
-LABEL dockerfile="https://github.com/superjump22/dontstarve-server-docker/blob/main/build/Dockerfile"
-LABEL dockerhub="https://hub.docker.com/r/superjump22/dontstarvetogether"
-LABEL github="https://github.com/superjump22/dontstarve-server-docker"
-LABEL maintainer="superjump"
-LABEL repo="superjump22/dontstarvetogether"
 LABEL branch="${DST_BRANCH}"
 LABEL buildid="${DST_BUILDID}"
 LABEL timeupdated="${DST_TIMEUPDATED}"
 
 # Environment settings
-ENV SteamAppId=322330
-ENV SteamGameId=322330
+ENV STEAM_APP_ID=343050
+ENV STEAM_WORKSHOP_ID=322330
+ENV DST_BRANCH=${DST_BRANCH}
 ENV DST_DIR=${HOMEDIR}/dst
 ENV DST_GAME_DIR=${DST_DIR}/game
 ENV DST_SAVE_DIR=${DST_DIR}/save
@@ -40,9 +36,10 @@ RUN set -x && \
     apt-get autoremove -y && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
-    # Install Don't Starve Together, execute as user
-    su "${USER}" -c 'mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_UGC_MOD_DIR}"' && \
-    su "${USER}" -c  '${STEAMCMDDIR}/steamcmd.sh +force_install_dir ${DST_GAME_DIR} +login anonymous +app_update 343050 -beta "${DST_BRANCH}" validate +quit'
+    chown -R root:root "${STEAMCMDDIR}" && \
+    # Install Don't Starve Together
+    mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_MOD_DIR}" "${DST_UGC_MOD_DIR}" && \
+    bash "${STEAMCMDDIR}/steamcmd.sh" +force_install_dir ${DST_GAME_DIR} +login anonymous +app_update ${STEAM_APP_ID} -beta "${DST_BRANCH}" validate +quit
 
 # Set the working directory
 WORKDIR ${DST_GAME_DIR}/bin64
