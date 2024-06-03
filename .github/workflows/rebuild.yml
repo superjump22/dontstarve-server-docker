@@ -1,4 +1,4 @@
-name: Rebuild Game Images for All Branches
+name: Rebuild Game & Toolbox Images manually for All Branches
 
 on:
   workflow_dispatch:
@@ -42,7 +42,7 @@ jobs:
           message: "update version csv"
           add: "version.csv"
 
-      - name: Read Csv
+      - name: Read csv
         id: read-csv
         run: |
           rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -cr -s '.'`
@@ -53,10 +53,18 @@ jobs:
           echo $rebuild_list | jq
           echo "::endgroup::"
 
-  rebuild-images:
+  rebuild-game-images:
     needs: get-rebuild-list
     if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/game.yml
+    with:
+      build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
+    secrets: inherit
+
+  rebuild-toolbox-images:
+    needs: [ get-rebuild-list, rebuild-game-images ]
+    if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
+    uses: ./.github/workflows/toolbox.yml
     with:
       build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
     secrets: inherit

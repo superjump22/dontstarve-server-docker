@@ -1,0 +1,34 @@
+name: Rebuild Toolbox Images manually for All Branches
+
+on:
+  workflow_dispatch:
+
+jobs:
+  get-rebuild-list:
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild-list: ${{ steps.read-csv.outputs.rebuild_list }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - name: Read csv
+        id: read-csv
+        run: |
+          rebuild_list=`awk -F, 'NR > 1 {print "{\"branch\": \"" $1 "\", \"buildid\": \"" $2 "\", \"timeupdated\": \"" $3 "\"}"}' version.csv | jq -cr -s '.'`
+
+          echo "rebuild_list=$rebuild_list" >> "$GITHUB_OUTPUT"
+
+          echo "::group::Rebuild list"
+          echo $rebuild_list | jq
+          echo "::endgroup::"
+
+  rebuild-toolbox-images:
+    needs: get-rebuild-list
+    if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
+    uses: ./.github/workflows/toolbox.yml
+    with:
+      build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
+    secrets: inherit

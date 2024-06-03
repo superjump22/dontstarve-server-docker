@@ -1,4 +1,4 @@
-name: Check and Update Game Images every 30 Minutes
+name: Check and Update Game & Toolbox Images manually or every 30 Minutes
 
 on:
   workflow_dispatch:
@@ -68,10 +68,18 @@ jobs:
           message: "update version csv"
           add: "version.csv"
 
-  update-images:
+  update-game-images:
     needs: check-update
     if: needs.check-update.outputs.changed-list != '[]' && needs.check-update.outputs.pushed == 'true'
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/game.yml
+    with:
+      build-items: ${{ needs.check-update.outputs.changed-list }}
+    secrets: inherit
+
+  update-toolbox-images:
+    needs: [ check-update, update-game-images ]
+    if: needs.check-update.outputs.changed-list != '[]' && needs.check-update.outputs.pushed == 'true'
+    uses: ./.github/workflows/toolbox.yml
     with:
       build-items: ${{ needs.check-update.outputs.changed-list }}
     secrets: inherit

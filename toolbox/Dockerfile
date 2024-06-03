@@ -1,5 +1,5 @@
-ARG BRANCH
-FROM superjump22/dontstarvetogether:${BRANCH}
+ARG DST_BRANCH
+FROM superjump22/dontstarvetogether:${DST_BRANCH}
 
 ENV DST_ENTRYPOINT=${DST_GAMEDIR}/bin64/dontstarve_dedicated_server_nullrenderer_x64
 

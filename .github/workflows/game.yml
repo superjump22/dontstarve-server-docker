@@ -8,7 +8,7 @@ on:
         type: string
 
 jobs:
-  build-images:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set Up Docker Buildx
+      - name: Set up docker buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
@@ -26,11 +26,11 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push public
+      - name: Build and push 'public'
         if: matrix.build-item.branch == 'public'
         uses: docker/build-push-action@v5
         with:
-          context: ./build
+          context: ./game
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
@@ -40,11 +40,11 @@ jobs:
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
 
-      - name: Build and push beta
+      - name: Build and push 'beta'
         if: matrix.build-item.branch != 'public'
         uses: docker/build-push-action@v5
         with:
-          context: ./build
+          context: ./game
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}
           build-args: |
