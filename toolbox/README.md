@@ -3,13 +3,13 @@
 docker run --rm \
     -v dst_mods:/home/steam/dst/game/mods:ro \
     -v dst_ugc_mods:/home/steam/dst/game/ugc_mods:ro \
-    superjump22/dontstarvetogether-toolbox \
+    superjump22/dontstarvetogether-toolbox:public \
     help
 
 # modinfo
 docker run --rm \
     -v dst_mods:/home/steam/dst/game/mods:ro \
     -v dst_ugc_mods:/home/steam/dst/game/ugc_mods:ro \
-    superjump22/dontstarvetogether-toolbox \
+    superjump22/dontstarvetogether-toolbox:public \
     modinfo
 ```
