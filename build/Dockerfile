@@ -19,14 +19,14 @@ LABEL buildid="${DST_BUILDID}"
 LABEL timeupdated="${DST_TIMEUPDATED}"
 
 # Environment settings
-ENV STEAM_APP_ID=343050
-ENV STEAM_WORKSHOP_ID=322330
+ENV STEAM_APPID=343050
+ENV STEAM_WORKSHOPID=322330
 ENV DST_BRANCH=${DST_BRANCH}
 ENV DST_DIR=${HOMEDIR}/dst
-ENV DST_GAME_DIR=${DST_DIR}/game
-ENV DST_SAVE_DIR=${DST_DIR}/save
-ENV DST_MOD_DIR=${DST_GAME_DIR}/mods
-ENV DST_UGC_MOD_DIR=${DST_GAME_DIR}/ugc_mods
+ENV DST_GAMEDIR=${DST_DIR}/game
+ENV DST_SAVEDIR=${DST_DIR}/save
+ENV DST_MODDIR=${DST_GAMEDIR}/mods
+ENV DST_UGCMODDIR=${DST_GAMEDIR}/ugc_mods
 
 RUN set -x && \
     # Install dependencies
@@ -38,11 +38,11 @@ RUN set -x && \
     rm -rf /var/lib/apt/lists/* && \
     chown -R root:root "${STEAMCMDDIR}" && \
     # Install Don't Starve Together
-    mkdir -p "${DST_DIR}" "${DST_GAME_DIR}" "${DST_SAVE_DIR}" "${DST_MOD_DIR}" "${DST_UGC_MOD_DIR}" && \
-    bash "${STEAMCMDDIR}/steamcmd.sh" +force_install_dir ${DST_GAME_DIR} +login anonymous +app_update ${STEAM_APP_ID} -beta "${DST_BRANCH}" validate +quit
+    mkdir -p "${DST_DIR}" "${DST_GAMEDIR}" "${DST_SAVEDIR}" "${DST_MODDIR}" "${DST_UGCMODDIR}" && \
+    bash "${STEAMCMDDIR}/steamcmd.sh" +force_install_dir ${DST_GAMEDIR} +login anonymous +app_update ${STEAM_APPID} -beta "${DST_BRANCH}" validate +quit
 
 # Set the working directory
-WORKDIR ${DST_GAME_DIR}/bin64
+WORKDIR ${DST_GAMEDIR}/bin64
 
 # Specify the entrypoint
 ENTRYPOINT ["./dontstarve_dedicated_server_nullrenderer_x64"]

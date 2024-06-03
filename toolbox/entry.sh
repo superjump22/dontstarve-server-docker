@@ -9,13 +9,13 @@ function help() {
 function modinfo() {
     mkdir -p /tmp/modinfo
     json_dict="{}"
-    for mod_dir in $DST_MOD_DIR/workshop-*; do
+    for mod_dir in $DST_MODDIR/workshop-*; do
         if [ -d "$mod_dir" ]; then
             mod_id=$(basename "$mod_dir" | cut -d '-' -f 2)
             modinfo_jsonify "$mod_id" "$mod_dir/modinfo.lua"
         fi
     done
-    for mod_dir in $DST_UGC_MOD_DIR/content/$STEAM_WORKSHOP_ID/*; do
+    for mod_dir in $DST_UGCMODDIR/content/$STEAM_WORKSHOPID/*; do
         if [ -d "$mod_dir" ]; then
             mod_id=$(basename "$mod_dir")
             modinfo_jsonify "$mod_id" "$mod_dir/modinfo.lua"
