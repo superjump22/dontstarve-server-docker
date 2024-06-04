@@ -44,22 +44,22 @@ function modinfo_jsonify() {
 
 function worldgenoverride() {
     rm -rf $DST_GAMEDIR/data/scripts
-    rm -f $DST_GAMEDIR/data/worldgenoverride_*.lua
+    rm -f $DST_GAMEDIR/data/worldgenoverride_*.json
     cp -r $DST_GAMEDIR/data/scripts_backup/scripts/ $DST_GAMEDIR/data/
     cp -r /root/toolbox/worldgenoverride/scripts/ $DST_GAMEDIR/data/
     echo -e "\nrequire 'inject_toolbox/main'\n" >>$DST_GAMEDIR/data/scripts/gamelogic.lua
     cd $DST_GAMEDIR/bin64
     ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" >/dev/null 2>&1
     cd $DST_GAMEDIR/data
-    cat worldgenoverride_forest_master.lua
+    cat worldgenoverride_forest_master.json
     echo
-    cat worldgenoverride_forest.lua
+    cat worldgenoverride_forest.json
     echo
-    cat worldgenoverride_cave_master.lua
+    cat worldgenoverride_cave_master.json
     echo
-    cat worldgenoverride_cave.lua
+    cat worldgenoverride_cave.json
     rm -rf $DST_GAMEDIR/data/scripts
-    rm -f $DST_GAMEDIR/data/worldgenoverride_*.lua
+    rm -f $DST_GAMEDIR/data/worldgenoverride_*.json
 }
 
 case "$1" in
