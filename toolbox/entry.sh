@@ -5,6 +5,7 @@ function help() {
     echo "  help    - Display this help."
     echo "  modinfo - Generate the modinfo json of all installed mods."
     echo "  clientversion - Get the client version."
+    echo "  worldgenoverride - Generate 'worldgenoverride.lua' templates."
 }
 
 function modinfo() {
@@ -41,6 +42,24 @@ function clientversion() {
     cat $DST_GAMEDIR/version.txt
 }
 
+function worldgenoverride() {
+    rm -rf $DST_GAMEDIR/data/scripts
+    cp -r $DST_GAMEDIR/data/scripts_backup/scripts/ $DST_GAMEDIR/data/
+    cp -r /root/toolbox/worldgenoverride/scripts/ $DST_GAMEDIR/data/
+    echo -e "\nrequire 'inject_toolbox/index'\n" >>$DST_GAMEDIR/data/scripts/gamelogic.lua
+    cd $DST_GAMEDIR/bin64
+    ./dontstarve_dedicated_server_nullrenderer_x64 >/dev/null
+    cd $DST_GAMEDIR/data
+    cat worldgenoverride_forest_master.lua
+    echo
+    cat worldgenoverride_forest.lua
+    echo
+    cat worldgenoverride_cave_master.lua
+    echo
+    cat worldgenoverride_cave.lua
+    rm -rf $DST_GAMEDIR/data/scripts
+}
+
 case "$1" in
 help)
     help
@@ -50,6 +69,9 @@ modinfo)
     ;;
 clientversion)
     clientversion
+    ;;
+worldgenoverride)
+    worldgenoverride
     ;;
 *)
     echo "Unknown command: $1"

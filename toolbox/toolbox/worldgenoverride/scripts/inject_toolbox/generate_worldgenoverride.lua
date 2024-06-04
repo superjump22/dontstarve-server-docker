@@ -1,5 +1,3 @@
---TO RUN THIS FROM THE GAME TYPE THIS INTO THE CONSOLE
---require 'tools/generate_worldgenoverride'
 local function GenerateWorldgenoverride(location, is_master_world)
     local Customize = require 'map/customize'
     local Levels = require 'map/levels'
@@ -46,7 +44,9 @@ local function GenerateWorldgenoverride(location, is_master_world)
         end
         presets = presets .. '"' .. level.data .. '"'
     end
-    table.insert(out, string.format('\tworldgen_preset = "%s", %s', Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.SURVIVAL, location)[1].data, presets))
+    table.insert(out,
+        string.format('\tworldgen_preset = "%s", %s',
+            Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.SURVIVAL, location)[1].data, presets))
 
     table.insert(out, '\toverrides = {')
     local lastgroup = nil
@@ -101,7 +101,6 @@ local function GenerateWorldgenoverride(location, is_master_world)
     file:close()
 end
 
-GenerateWorldgenoverride('forest', true)
-GenerateWorldgenoverride('forest', false)
-GenerateWorldgenoverride('cave', true)
-GenerateWorldgenoverride('cave', false)
+return {
+    GenerateOverride = GenerateWorldgenoverride
+}

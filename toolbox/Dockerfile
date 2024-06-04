@@ -26,15 +26,15 @@ RUN curl -L -R -O https://luarocks.org/releases/luarocks-3.11.0.tar.gz && \
     ./configure && make && make install && \
     luarocks install rapidjson
 
-COPY entry.sh /root/entry.sh
-COPY generate_worldgenoverride.lua ${DST_GAMEDIR}/data/scripts/tools/generate_worldgenoverride.lua
-
-RUN chmod +x /root/entry.sh ${DST_GAMEDIR}/data/scripts/tools/generate_worldgenoverride.lua
-
-# Unzip scripts
+# Unzip lua scripts of Don't Starve Together
 RUN cd ${DST_GAMEDIR}/data && \
-    unzip databundles/scripts.zip && \
+    unzip databundles/scripts.zip -d scripts_backup && \
     rm -f databundles/scripts.zip
+
+COPY entry.sh /root/entry.sh
+COPY toolbox /root/toolbox
+
+RUN chmod +x /root/entry.sh
 
 ENTRYPOINT ["/root/entry.sh"]
 
