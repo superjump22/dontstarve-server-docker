@@ -27,8 +27,9 @@ RUN curl -L -R -O https://luarocks.org/releases/luarocks-3.11.0.tar.gz && \
     luarocks install rapidjson
 
 COPY entry.sh /root/entry.sh
+COPY generate_worldgenoverride.lua ${DST_GAMEDIR}/data/scripts/tools/generate_worldgenoverride.lua
 
-RUN chmod +x /root/entry.sh
+RUN chmod +x /root/entry.sh ${DST_GAMEDIR}/data/scripts/tools/generate_worldgenoverride.lua
 
 # Unzip scripts
 RUN cd ${DST_GAMEDIR}/data && \
