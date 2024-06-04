@@ -20,11 +20,9 @@ local function GenerateWorldgenoverride(location, is_master_world)
         end
     end
 
-
     local out = {}
     table.insert(out, string.format('return { -- location=%s, is_master_world=%s', location, tostring(is_master_world)))
     table.insert(out, '\toverride_enabled = true,')
-
 
     local presets = '\t\t\t-- '
     for i, level in ipairs(Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.SURVIVAL, location)) do
@@ -86,15 +84,12 @@ local function GenerateWorldgenoverride(location, is_master_world)
     table.insert(out, '\t},')
     table.insert(out, '}')
 
-    print(table.concat(out, '\n'))
-
     local path = nil
     if is_master_world then
         path = string.format('worldgenoverride_%s_master.lua', location)
     else
         path = string.format('worldgenoverride_%s.lua', location)
     end
-
 
     local file = assert(io.open(path, "w"))
     file:write(table.concat(out, '\n'))
