@@ -32,7 +32,7 @@ function modinfo_jsonify() {
     local modinfo_path="$2"
     if [ -f "$modinfo_path" ]; then
         cp "$modinfo_path" "/tmp/modinfo/$mod_id.lua"
-        echo -e "\nlocal rapidjson = require('rapidjson')\nprint(rapidjson.encode(configuration_options))" >>"/tmp/modinfo/$mod_id.lua"
+        echo -e "\nprint(json.encode_compliant(configuration_options))" >>"/tmp/modinfo/$mod_id.lua"
         output=$(lua "/tmp/modinfo/$mod_id.lua")
         json_dict=$(echo "$json_dict" | jq -c --arg key "$mod_id" --argjson value "$output" '. + {($key): $value}')
     fi
