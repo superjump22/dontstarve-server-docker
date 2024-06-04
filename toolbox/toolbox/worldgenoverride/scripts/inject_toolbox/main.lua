@@ -1,4 +1,32 @@
 local function GenerateWorldgenoverride(location, is_master_world)
+    local path = nil
+    if is_master_world then
+        path = string.format('worldgenoverride_%s_master.json', location)
+    else
+        path = string.format('worldgenoverride_%s.json', location)
+    end
+    local out = {
+        settings_preset = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.SURVIVAL, location),
+        worldgen_preset = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.SURVIVAL, location),
+        settings_preset_CAVE = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.CAVE, location),
+        worldgen_preset_CAVE = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.CAVE, location),
+        settings_preset_ADVENTURE = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.ADVENTURE, location),
+        worldgen_preset_ADVENTURE = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.ADVENTURE, location),
+        settings_preset_LAVAARENA = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.LAVAARENA, location),
+        worldgen_preset_LAVAARENA = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.LAVAARENA, location),
+        settings_preset_QUAGMIRE = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.QUAGMIRE, location),
+        worldgen_preset_QUAGMIRE = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.QUAGMIRE, location),
+        settings_preset_TEST = Levels.GetList(LEVELCATEGORY.SETTINGS, LEVELTYPE.TEST, location),
+        worldgen_preset_TEST = Levels.GetList(LEVELCATEGORY.WORLDGEN, LEVELTYPE.TEST, location),
+        settings_options = Customize.GetWorldSettingsOptions(location, is_master_world),
+        worldgen_options = Customize.GetWorldGenOptions(location, is_master_world),
+    }
+    local file = assert(io.open(path, "w"))
+    file:write(json.encode_compliant(out))
+    file:close()
+end
+
+local function GenerateWorldgenoverride1(location, is_master_world)
     local Customize = require 'map/customize'
     local Levels = require 'map/levels'
 
