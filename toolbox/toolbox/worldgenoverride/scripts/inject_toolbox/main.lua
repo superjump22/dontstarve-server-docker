@@ -96,6 +96,8 @@ local function GenerateWorldgenoverride(location, is_master_world)
     file:close()
 end
 
-return {
-    GenerateOverride = GenerateWorldgenoverride
-}
+GenerateWorldgenoverride('forest', true)
+GenerateWorldgenoverride('forest', false)
+GenerateWorldgenoverride('cave', true)
+GenerateWorldgenoverride('cave', false)
+Shutdown()
