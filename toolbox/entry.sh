@@ -51,7 +51,7 @@ function worldgenoverride() {
     cd $DST_GAMEDIR/bin64
     ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" >/dev/null 2>&1
     cd $DST_GAMEDIR/data
-    cat worldgenoverride.json
+    cat $DST_GAMEDIR/data/worldgenoverride.json
     echo
     rm -rf $DST_GAMEDIR/data/scripts
     rm -f $DST_GAMEDIR/data/worldgenoverride.json
