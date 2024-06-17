@@ -15,12 +15,14 @@ function clientversion() {
 function modinfo() {
     mkdir -p /tmp/modinfo
     json_dict="{}"
+    # search for v1 mods
     for mod_dir in $DST_MODDIR/workshop-*; do
         if [ -d "$mod_dir" ]; then
             mod_id=$(basename "$mod_dir" | cut -d '-' -f 2)
             modinfo_jsonify "$mod_id" "$mod_dir/modinfo.lua"
         fi
     done
+    # seach for v2 mods
     for mod_dir in $DST_UGCMODDIR/content/$STEAM_WORKSHOPID/*; do
         if [ -d "$mod_dir" ]; then
             mod_id=$(basename "$mod_dir")
@@ -43,34 +45,35 @@ function modinfo_jsonify() {
 }
 
 function worldgenoverride() {
+    # cleanup
     rm -rf $DST_GAMEDIR/data/scripts
     rm -f $DST_GAMEDIR/data/worldgenoverride.json
+    for lang in en zh zht; do
+        rm -f $DST_GAMEDIR/data/$lang.json
+    done
+
+    # inject
     cp -r $DST_GAMEDIR/data/scripts_backup/scripts/ $DST_GAMEDIR/data/
     cp -r /root/toolbox/worldgenoverride/scripts/ $DST_GAMEDIR/data/
     echo -e "\nrequire 'inject_toolbox/main'\n" >>$DST_GAMEDIR/data/scripts/gamelogic.lua
 
-    cd $DST_GAMEDIR/bin64
-    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox/worldgenoverride" -conf_dir "save" -cluster "Cluster_en" -shard "Master" >/dev/null 2>&1
-    cd $DST_GAMEDIR/data
-    cat $DST_GAMEDIR/data/worldgenoverride.json
-    echo
-    rm -f $DST_GAMEDIR/data/worldgenoverride.json
+    # generate
+    for lang in en zh zht; do
+        cd $DST_GAMEDIR/bin64
+        ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox/worldgenoverride" -conf_dir "save" -cluster "Cluster_$lang" -shard "Master" >/dev/null 2>&1
+        cd $DST_GAMEDIR/data
+        mv worldgenoverride.json $lang.json
+    done
 
-    cd $DST_GAMEDIR/bin64
-    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox/worldgenoverride" -conf_dir "save" -cluster "Cluster_zh" -shard "Master" >/dev/null 2>&1
-    cd $DST_GAMEDIR/data
-    cat $DST_GAMEDIR/data/worldgenoverride.json
-    echo
-    rm -f $DST_GAMEDIR/data/worldgenoverride.json
+    # merge
+    jq -s -c '{en: .[0], zh: .[1], zht: .[2]}' en.json zh.json zht.json
 
-    cd $DST_GAMEDIR/bin64
-    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox/worldgenoverride" -conf_dir "save" -cluster "Cluster_zht" -shard "Master" >/dev/null 2>&1
-    cd $DST_GAMEDIR/data
-    cat $DST_GAMEDIR/data/worldgenoverride.json
-    echo
-    rm -f $DST_GAMEDIR/data/worldgenoverride.json
-
+    # cleanup
     rm -rf $DST_GAMEDIR/data/scripts
+    rm -f $DST_GAMEDIR/data/worldgenoverride.json
+    for lang in en zh zht; do
+        rm -f $DST_GAMEDIR/data/$lang.json
+    done
 }
 
 case "$1" in
