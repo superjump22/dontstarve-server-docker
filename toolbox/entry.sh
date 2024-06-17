@@ -48,13 +48,29 @@ function worldgenoverride() {
     cp -r $DST_GAMEDIR/data/scripts_backup/scripts/ $DST_GAMEDIR/data/
     cp -r /root/toolbox/worldgenoverride/scripts/ $DST_GAMEDIR/data/
     echo -e "\nrequire 'inject_toolbox/main'\n" >>$DST_GAMEDIR/data/scripts/gamelogic.lua
+
     cd $DST_GAMEDIR/bin64
-    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" >/dev/null 2>&1
+    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox" -conf_dir "save" -cluster "Cluster_en" -shard "Master" >/dev/null 2>&1
     cd $DST_GAMEDIR/data
     cat $DST_GAMEDIR/data/worldgenoverride.json
     echo
-    rm -rf $DST_GAMEDIR/data/scripts
     rm -f $DST_GAMEDIR/data/worldgenoverride.json
+
+    cd $DST_GAMEDIR/bin64
+    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox" -conf_dir "save" -cluster "Cluster_zh" -shard "Master" >/dev/null 2>&1
+    cd $DST_GAMEDIR/data
+    cat $DST_GAMEDIR/data/worldgenoverride.json
+    echo
+    rm -f $DST_GAMEDIR/data/worldgenoverride.json
+
+    cd $DST_GAMEDIR/bin64
+    ./dontstarve_dedicated_server_nullrenderer_x64 -skip_update_server_mods -ugc_directory "$DST_UGCMODDIR" -persistent_storage_root "/root/toolbox" -conf_dir "save" -cluster "Cluster_zht" -shard "Master" >/dev/null 2>&1
+    cd $DST_GAMEDIR/data
+    cat $DST_GAMEDIR/data/worldgenoverride.json
+    echo
+    rm -f $DST_GAMEDIR/data/worldgenoverride.json
+
+    rm -rf $DST_GAMEDIR/data/scripts
 }
 
 case "$1" in

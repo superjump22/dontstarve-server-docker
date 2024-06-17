@@ -48,12 +48,7 @@ local function export()
         },
     }
 end
-local out = {}
-out.en = export(1)
-LOC.SwapLanguage(LANGUAGE.CHINESE_S)
-out.zh = export(2)
-LOC.SwapLanguage(LANGUAGE.CHINESE_T)
-out.zht = export(3)
+local out = export()
 local file = assert(io.open('worldgenoverride.json', "w"))
 file:write(json.encode_compliant(out))
 file:close()
