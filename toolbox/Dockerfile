@@ -12,7 +12,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Lua
-RUN curl -L -R -O https://www.lua.org/ftp/lua-5.4.6.tar.gz && \
+RUN curl -L -R -O https://github.com/lua/lua/archive/refs/tags/v5.4.6.tar.gz && \
     tar -zxf lua-5.4.6.tar.gz && \
     cd lua-5.4.6 && \
     make linux test && \
