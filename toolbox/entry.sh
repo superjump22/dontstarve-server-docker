@@ -40,7 +40,7 @@ function modinfo_jsonify() {
         cp "$modinfo_path" "/tmp/modinfo/$mod_id.lua"
         echo -e "\nlocal rapidjson = require('rapidjson')\nprint(rapidjson.encode(configuration_options))" >>"/tmp/modinfo/$mod_id.lua"
         output=$(lua "/tmp/modinfo/$mod_id.lua")
-        json_dict=$(echo "$json_dict" | jq -cr --arg key "$mod_id" --argjson value "$output" '. + {($key): $value}')
+        json_dict=$(echo "$json_dict" | jq -crMS --arg key "$mod_id" --argjson value "$output" '. + {($key): $value}')
     fi
 }
 
@@ -66,7 +66,7 @@ function worldgenoverride() {
     done
 
     # merge
-    jq -s -cr '{en: .[0], zh: .[1], zht: .[2]}' en.json zh.json zht.json
+    jq -scrMS '{en: .[0], zh: .[1], zht: .[2]}' en.json zh.json zht.json
 
     # cleanup
     rm -rf $DST_GAMEDIR/data/scripts
