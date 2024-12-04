@@ -21,6 +21,11 @@ jobs:
         id: fetch-game-info
         run: |
           gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
+          if [ -z "$gameinfo" ]; then
+            echo "Failed to fetch game info. Exiting."
+            exit 1
+          fi
+
           echo "gameinfo=$gameinfo" >> "$GITHUB_ENV"
 
           echo "::group::Game info"
