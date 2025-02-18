@@ -22,7 +22,18 @@ jobs:
         run: |
           gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
           if [ -z "$gameinfo" ]; then
-            echo "Failed to fetch game info. Exiting."
+            echo "::group::Error"
+            echo "(curl) Failed to fetch game info. Exiting."
+            echo "::endgroup::"
+            exit 1
+          fi
+
+          status=`echo $gameinfo | jq -r ".status"`
+          data=`echo $gameinfo | jq -r ".data.\"343050\""`
+          if [ "$status" = "failed" ] || [ "$data" = "{}" ]; then
+            echo "::group::Error"
+            echo "(steamcmd) API request failed or returned empty data. Exiting."
+            echo "::endgroup::"
             exit 1
           fi
 
