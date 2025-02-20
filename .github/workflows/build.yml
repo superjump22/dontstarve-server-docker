@@ -1,0 +1,95 @@
+name: Build Game & Toolbox Images
+
+on:
+  workflow_call:
+    inputs:
+      build-items:
+        required: true
+        type: string
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build-item: ${{ fromJson(inputs.build-items) }}
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build downloader
+        uses: docker/build-push-action@v6
+        with:
+          target: downloader
+          load: true
+          tags: dst-downloader:${{ matrix.build-item.branch }}
+          build-args: |
+            DST_BRANCH=${{ matrix.build-item.branch }}
+            DST_BUILDID=${{ matrix.build-item.buildid }}
+            DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
+
+      - name: Get game version
+        id: get-version
+        run: |
+          version=$(docker run --rm dst-downloader:${{ matrix.build-item.branch }} cat /home/steam/dst/game/version.txt)
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push 'public' game image
+        if: matrix.build-item.branch == 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: game
+          load: true
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:latest
+          build-args: |
+            DST_BRANCH=${{ matrix.build-item.branch }}
+            DST_BUILDID=${{ matrix.build-item.buildid }}
+            DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
+            DST_VERSION=${{ steps.get-version.outputs.version }}
+
+      - name: Build and push 'beta' game image
+        if: matrix.build-item.branch != 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: game
+          load: true
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}
+          build-args: |
+            DST_BRANCH=${{ matrix.build-item.branch }}
+            DST_BUILDID=${{ matrix.build-item.buildid }}
+            DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
+            DST_VERSION=${{ steps.get-version.outputs.version }}
+
+      - name: Build and push 'public' toolbox image
+        if: matrix.build-item.branch == 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: toolbox
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:latest
+
+      - name: Build and push 'beta' toolbox image
+        if: matrix.build-item.branch != 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: toolbox
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}
