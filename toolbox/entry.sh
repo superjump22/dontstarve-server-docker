@@ -3,13 +3,13 @@
 function help() {
     echo "Available commands:"
     echo "  help    - Display this help."
-    echo "  clientversion - Get the client version."
+    echo "  version - Get the game version."
     echo "  modinfo - Generate the modinfo json of all installed mods."
     echo "  worldgenoverride - Generate 'worldgenoverride.lua' templates."
 }
 
-function clientversion() {
-    cat $DST_GAMEDIR/version.txt
+function version() {
+    echo $DST_VERSION
 }
 
 function modinfo() {
@@ -80,8 +80,8 @@ case "$1" in
 help)
     help
     ;;
-clientversion)
-    clientversion
+version)
+    version
     ;;
 modinfo)
     modinfo
