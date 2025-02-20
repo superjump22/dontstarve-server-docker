@@ -1,4 +1,4 @@
-ARG TAG
+ARG TAG=public
 FROM superjump22/dontstarvetogether:${TAG}
 
 ENV DST_ENTRYPOINT=${DST_GAMEDIR}/bin64/dontstarve_dedicated_server_nullrenderer_x64
