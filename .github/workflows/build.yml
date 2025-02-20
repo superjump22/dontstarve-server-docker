@@ -33,6 +33,8 @@ jobs:
             DST_BRANCH=${{ matrix.build-item.branch }}
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Get game version
         id: get-version
@@ -45,7 +47,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           target: game
-          load: true
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public-${{ steps.get-version.outputs.version }}
@@ -56,13 +57,14 @@ jobs:
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
             DST_VERSION=${{ steps.get-version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push 'beta' game image
         if: matrix.build-item.branch != 'public'
         uses: docker/build-push-action@v6
         with:
           target: game
-          load: true
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
@@ -72,6 +74,8 @@ jobs:
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
             DST_VERSION=${{ steps.get-version.outputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push 'public' toolbox image
         if: matrix.build-item.branch == 'public'
@@ -83,6 +87,8 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push 'beta' toolbox image
         if: matrix.build-item.branch != 'public'
@@ -93,3 +99,5 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
