@@ -12,16 +12,16 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install Lua
-COPY lua-5.4.6.tar.gz /root/
-RUN tar -zxf lua-5.4.6.tar.gz && \
-    cd lua-5.4.6 && \
+COPY lua-5.4.7.tar.gz /root/
+RUN tar -zxf lua-5.4.7.tar.gz && \
+    cd lua-5.4.7 && \
     make linux test && \
     make install
 
 # Install LuaRocks & rapidjson
-COPY luarocks-3.11.0.tar.gz /root/
-RUN tar -zxf luarocks-3.11.0.tar.gz && \
-    cd luarocks-3.11.0 && \
+COPY luarocks-3.11.1.tar.gz /root/
+RUN tar -zxf luarocks-3.11.1.tar.gz && \
+    cd luarocks-3.11.1 && \
     ./configure && make && make install && \
     luarocks install rapidjson
 
