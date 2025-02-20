@@ -85,7 +85,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:toolbox"
-          target: toolbox
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
@@ -101,7 +100,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: "{{defaultContext}}:toolbox"
-          target: toolbox
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
