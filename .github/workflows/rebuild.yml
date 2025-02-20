@@ -17,7 +17,42 @@ jobs:
       - name: Fetch game info
         id: fetch-game-info
         run: |
-          gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
+          max_retries=3
+          retry_count=0
+          success=false
+
+          while [ $retry_count -lt $max_retries ] && [ "$success" = "false" ]; do
+            retry_count=$((retry_count + 1))
+            echo "::group::Attempt $retry_count of $max_retries"
+            
+            gameinfo=`curl -s "https://api.steamcmd.net/v1/info/343050"`
+            if [ -z "$gameinfo" ]; then
+              echo "(curl) Failed to fetch game info."
+              echo "::endgroup::"
+              if [ $retry_count -eq $max_retries ]; then
+                exit 1
+              fi
+              sleep 5
+              continue
+            fi
+
+            status=`echo $gameinfo | jq -r ".status"`
+            data=`echo $gameinfo | jq -r ".data.\"343050\""`
+            if [ "$status" = "failed" ] || [ "$data" = "{}" ]; then
+              echo "(steamcmd) API request failed or returned empty data."
+              echo "::endgroup::"
+              if [ $retry_count -eq $max_retries ]; then
+                exit 1
+              fi
+              sleep 5
+              continue
+            fi
+
+            success=true
+            echo "Successfully fetched game info on attempt $retry_count"
+            echo "::endgroup::"
+          done
+
           echo "gameinfo=$gameinfo" >> "$GITHUB_ENV"
 
           echo "::group::Game info"
@@ -53,18 +88,10 @@ jobs:
           echo $rebuild_list | jq
           echo "::endgroup::"
 
-  rebuild-game-images:
+  rebuild-images:
     needs: get-rebuild-list
     if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
-    uses: ./.github/workflows/game.yml
-    with:
-      build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
-    secrets: inherit
-
-  rebuild-toolbox-images:
-    needs: [ get-rebuild-list, rebuild-game-images ]
-    if: needs.get-rebuild-list.outputs.rebuild-list != '[]'
-    uses: ./.github/workflows/toolbox.yml
+    uses: ./.github/workflows/build.yml
     with:
       build-items: ${{ needs.get-rebuild-list.outputs.rebuild-list }}
     secrets: inherit

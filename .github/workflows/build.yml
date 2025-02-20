@@ -1,4 +1,4 @@
-name: Build Game Images
+name: Build Game & Toolbox Images
 
 on:
   workflow_call:
@@ -23,11 +23,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # First stage: Build downloader and get version
-      - name: Build downloader stage
+      - name: Build downloader
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:game"
           target: downloader
           load: true
           tags: dst-downloader:${{ matrix.build-item.branch }}
@@ -42,13 +40,12 @@ jobs:
           version=$(docker run --rm dst-downloader:${{ matrix.build-item.branch }} cat /home/steam/dst/game/version.txt)
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
-      # Second stage: Build final image and push
-      - name: Build and push 'public'
+      - name: Build and push 'public' game image
         if: matrix.build-item.branch == 'public'
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:game"
-          target: final
+          target: game
+          load: true
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public-${{ steps.get-version.outputs.version }}
@@ -60,12 +57,12 @@ jobs:
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
             DST_VERSION=${{ steps.get-version.outputs.version }}
 
-      - name: Build and push 'beta'
+      - name: Build and push 'beta' game image
         if: matrix.build-item.branch != 'public'
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:game"
-          target: final
+          target: game
+          load: true
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
@@ -75,3 +72,24 @@ jobs:
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
             DST_VERSION=${{ steps.get-version.outputs.version }}
+
+      - name: Build and push 'public' toolbox image
+        if: matrix.build-item.branch == 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: toolbox
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:latest
+
+      - name: Build and push 'beta' toolbox image
+        if: matrix.build-item.branch != 'public'
+        uses: docker/build-push-action@v6
+        with:
+          target: toolbox
+          push: true
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}
