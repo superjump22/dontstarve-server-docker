@@ -45,7 +45,7 @@ ARG DST_TIMEUPDATED
 ARG DST_VERSION
 
 # Clear inherited labels
-LABEL maintainer=""
+LABEL maintainer="superjump.void@gmail.com"
 
 # Metadata
 LABEL branch="${DST_BRANCH}"
