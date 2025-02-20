@@ -87,8 +87,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
 
       - name: Build and push 'beta' toolbox image
         if: matrix.build-item.branch != 'public'
@@ -99,5 +98,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}
