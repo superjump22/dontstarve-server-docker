@@ -26,6 +26,7 @@ jobs:
       - name: Build downloader
         uses: docker/build-push-action@v6
         with:
+          context: "{{defaultContext}}:game"
           target: downloader
           load: true
           tags: dst-downloader:${{ matrix.build-item.branch }}
@@ -46,6 +47,7 @@ jobs:
         if: matrix.build-item.branch == 'public'
         uses: docker/build-push-action@v6
         with:
+          context: "{{defaultContext}}:game"
           target: game
           push: true
           tags: |
@@ -53,7 +55,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:latest
           build-args: |
-            DST_BRANCH=${{ matrix.build-item.branch }}
+            DST_BRANCH=public
             DST_BUILDID=${{ matrix.build-item.buildid }}
             DST_TIMEUPDATED=${{ matrix.build-item.timeupdated }}
             DST_VERSION=${{ steps.get-version.outputs.version }}
@@ -64,6 +66,7 @@ jobs:
         if: matrix.build-item.branch != 'public'
         uses: docker/build-push-action@v6
         with:
+          context: "{{defaultContext}}:game"
           target: game
           push: true
           tags: |
@@ -81,21 +84,29 @@ jobs:
         if: matrix.build-item.branch == 'public'
         uses: docker/build-push-action@v6
         with:
+          context: "{{defaultContext}}:toolbox"
           target: toolbox
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:public
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:public
+          build-args: |
+            TAG=public
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Build and push 'beta' toolbox image
         if: matrix.build-item.branch != 'public'
         uses: docker/build-push-action@v6
         with:
+          context: "{{defaultContext}}:toolbox"
           target: toolbox
           push: true
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}-${{ steps.get-version.outputs.version }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether-toolbox:${{ matrix.build-item.branch }}
-          cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/dontstarvetogether:${{ matrix.build-item.branch }}
+          build-args: |
+            TAG=${{ matrix.build-item.branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
