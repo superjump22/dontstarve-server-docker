@@ -3,7 +3,7 @@
 ###################################################################
 
 # First stage: Download game
-FROM cm2network/steamcmd:root as downloader
+FROM cm2network/steamcmd:root AS downloader
 
 # Build Arguments for downloader
 ARG DEBIAN_FRONTEND=noninteractive
