@@ -36,7 +36,7 @@ RUN set -x && \
     bash "${STEAMCMDDIR}/steamcmd.sh" +force_install_dir ${DST_GAMEDIR} +login anonymous +app_update ${STEAM_APPID} -beta "${DST_BRANCH}" validate +quit
 
 # Second stage: Setup environment
-FROM downloader
+FROM downloader AS final
 
 # Build Arguments
 ARG DST_BRANCH
