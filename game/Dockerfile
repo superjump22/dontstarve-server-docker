@@ -23,7 +23,6 @@ ENV DST_MODDIR=${DST_GAMEDIR}/mods
 ENV DST_UGCMODDIR=${DST_GAMEDIR}/ugc_mods
 
 RUN set -x && \
-    # Install dependencies
     dpkg --add-architecture i386 && \
     apt-get update && \
     apt-get install -y --no-install-recommends --no-install-suggests libcurl4-gnutls-dev:i386 libcurl3-gnutls && \
@@ -31,9 +30,26 @@ RUN set -x && \
     apt-get clean -y && \
     rm -rf /var/lib/apt/lists/* && \
     chown -R root:root "${STEAMCMDDIR}" && \
-    # Install Don't Starve Together
-    mkdir -p "${DST_DIR}" "${DST_GAMEDIR}" "${DST_SAVEDIR}" "${DST_MODDIR}" "${DST_UGCMODDIR}" && \
-    bash "${STEAMCMDDIR}/steamcmd.sh" +force_install_dir ${DST_GAMEDIR} +login anonymous +app_update ${STEAM_APPID} -beta "${DST_BRANCH}" validate +quit
+    mkdir -p "${DST_DIR}" "${DST_GAMEDIR}" "${DST_SAVEDIR}" "${DST_MODDIR}" "${DST_UGCMODDIR}"
+
+RUN max_retries=5 && \
+    retry=0 && \
+    until [ $retry -ge $max_retries ]; do \
+        bash "${STEAMCMDDIR}/steamcmd.sh" \
+            +force_install_dir ${DST_GAMEDIR} \
+            +login anonymous \
+            +app_update ${STEAM_APPID} \
+            -beta "${DST_BRANCH}" \
+            validate \
+            +quit && break; \
+        retry=$((retry + 1)); \
+        echo "SteamCMD failed (attempt $retry/$max_retries), retrying in 10 seconds..."; \
+        sleep 10; \
+    done && \
+    if [ $retry -ge $max_retries ]; then \
+        echo "SteamCMD failed after $max_retries attempts"; \
+        exit 1; \
+    fi
 
 # Second stage: Setup environment
 FROM downloader AS game
