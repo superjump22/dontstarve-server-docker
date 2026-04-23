@@ -10,7 +10,7 @@ jobs:
       rebuild-list: ${{ steps.read-csv.outputs.rebuild_list }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
 
@@ -71,7 +71,7 @@ jobs:
 
       - name: Commit changes
         id: commit-changes
-        uses: EndBug/add-and-commit@v9
+        uses: EndBug/add-and-commit@v10
         with:
           default_author: github_actions
           message: "update version csv"
